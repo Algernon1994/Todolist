@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Todo App</title>
+
+</head>
+
+<body>
+    <div>
+        <h1>To Do List</h1>
+
+    
+
+        <form action="/add" method="post">
+            <div>
+                <label>Todo task</label>
+                <input type="text" name="task" placeholder="Enter a Task">
+                <button type="submit">Add a Task</button>
+            </div>
+        </form>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <hr>
+
+        {% for todo in todo_list %}
+        <div>
+            <p>{{todo.id }} : {{ todo.task }} : {{ todo.complete }}</p>
+            <p>Created on: {{ todo.date_created.strftime('%d/%m/%Y %H:%M') }}</p>
+
+            {% if todo.complete==False %}
+                <p>Task Incomplete.</p>
+            {% else %}
+                <p> Task Complete</p>
+            {% endif %}
+
+            <form action="/update/{{ todo.id }}" method="POST" style="display:inline;">
+                <button type="submit" class="toggle-btn">
+                    {% if not todo.complete %}
+                        Mark as Complete
+                    {% else %}
+                        Mark as Incomplete
+                    {% endif %}
+                </button>
+            </form>
+
+        </div>
+        <p>
+            <a href="/edit/{{ todo.id }}" class="edit-btn">Edit</a>
+            <a href="/delete/{{ todo.id }}" class="delete-btn">Delete Task?</a>
+        </p>
+        {% endfor %}
+    
+
+    </div>
+</body>
+
+</html>
